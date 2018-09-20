@@ -59,8 +59,8 @@ int_vec merge(int_vec A, int_vec B){
 			B.erase(B.begin());
 		}
 	}
-	std::copy(std::begin(A), std::end(A), std::back_inserter(result));
-	std::copy(std::begin(B), std::end(B), std::back_inserter(result));
+	copy(A.begin(), A.end(), back_inserter(result));
+	copy(B.begin(), B.end(), back_inserter(result));
 	return result;
 }
 
@@ -92,27 +92,40 @@ int_vec mergesort_k(int_vec A, int k){
 }
 
 //mergesort using half the memory when it can
+/**
+	
+	This last 2 functions don't work :( 
+
+	**/
+
+/**
 
 void merge_n2(int_vec& A, int start, int mid, int end){
 	int tempS, tempE;
 	tempS = start;
 	tempE = mid+1;
-	while (tempS < mid+1 && tempE < end){
-		if ( A.at(tempS) < A.at(tempE) ){ //usual merge
+	while (tempE < end){
+		if ( A.at(tempS) < A.at(tempE) ){ 
 			tempS++;
 		} else {
 			swap(A.at(tempS), A.at(tempE));
-			tempE++;
 			tempS++;
+			if (A.at(tempS) < A.at(tempE) || tempS == tempE ) {
+				tempE++;
+				if (tempE < end && A.at(tempE) < A.at(tempE + 1) ) return; 
+			}
 		}
 	}
-	while (tempS < end){
-		if (A.at(tempS) < A.at(tempS + 1)) return;
-		swap(A.at(tempS), A.at(tempS+1));
-		tempS++;
+	//while (tempS < end){
+		if (A.at(tempS) > A.at(tempE)){
+			tempS++;
+			swap(A.at(tempS), A.at(tempE));
+		} else tempS++;
+		return;
 	}
 }
 
+	
 void mergesort_n2(int_vec& A, int start, int end){
 	if (start < end){
 		int mid = (start+end)>>1;
@@ -122,12 +135,14 @@ void mergesort_n2(int_vec& A, int start, int end){
 	}
 }
 
+**/
+
 int main(int argc, char *argv[]) {
 	
-	int_vec A, A_merge, A_mergeK, A_mergeN2;
-	/*char ask;
+	int_vec A, A_merge, A_mergeK/*, A_merge_n2*/;
+	char ask;
 	int k;
-	cout << "Todas las pruebas se realizarán con 1k (1000) datos.\n";
+	cout << "Todas las pruebas se realizarán con los mismos 1k (1000) datos.\n";
 	fill_vec(A, 1000, 10000);
 	cout << "Desea ver los datos generados? (y/n)"; cin >> ask; 
 	if (ask == 'y'){
@@ -143,12 +158,11 @@ int main(int argc, char *argv[]) {
 	A_mergeK = mergesort_k(A, k);
 	print_vec(A_mergeK);
 	cout << "Presione cualquier tecla para continuar\n"; cin >> ask;
-	A.erase(A.begin(), A.end());
-	*/
-	fill_vec(A, 10, 1000);
+	A.erase(A.begin(), A.end());	
+	/*fill_vec(A, 10, 1000);
 	print_vec(A);
 	mergesort_n2( A, 0, A.size() - 1 );
-	print_vec(A);
+	print_vec(A);*/
 	return 0;
 }
 
