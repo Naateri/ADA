@@ -100,6 +100,7 @@ void Graph::dfs(Node* v){
 	my_stack.push(v);
 	v->colour = 'g';
 	real_dfs();
+	reset_colours();
 }
 
 void Graph::real_dfs( ){
@@ -129,6 +130,7 @@ void Graph::bfs(Node* v){
 	my_queue.push(v);
 	v->colour = 'g';
 	real_bfs();
+	reset_colours();
 }
 
 void Graph::real_bfs( ){
