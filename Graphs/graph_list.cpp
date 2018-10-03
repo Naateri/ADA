@@ -6,16 +6,19 @@
 #include <stack>
 #include <string>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
 struct Node;
 struct Edge;
+struct edge_minor;
 
 typedef pair<Node*, int> node_weigh; //node and it's weight
 typedef list<node_weigh> node_list; //list of adjacent nodes
 typedef vector<Node*> node_vec; //vector of nodes
 typedef vector<Edge*> edge_vec; //vector of edges
+typedef set<Edge*, edge_minor> edge_set; //set of edges
 typedef vector<bool> bool_vec; //vector of booleans
 typedef vector<int> int_vec; //vector of integers
 
@@ -55,6 +58,17 @@ bool edge_minor_w(Edge* a, Edge* b){
 	return a->weight < b->weight;
 }
 
+struct edge_minor{
+	bool operator()(Edge* e1, Edge* e2) { //different cases because
+		if (e1->weight == e2->weight){ //<set> stores different values
+			if (e1->a->name == e2->a->name)
+				return e1->b->name < e2->b->name;
+			else return e1->a->name < e2->a->name;
+		}
+		return e1->weight < e2->weight;
+	}
+};
+
 class Graph{
 public:
 	node_vec nodes;
@@ -67,6 +81,7 @@ public:
 	friend Graph kruskal(Graph K, Node* v);
 private:
 	edge_vec edges;
+	edge_set my_edges;
 	stack<Node*> my_stack;
 	queue<Node*> my_queue;
 	void real_dfs();
@@ -91,6 +106,7 @@ void Graph::add_edge(Node* a, Node* b, int w, bool dir){
 	if (! dir) b->add_neighbour(a, w);
 	Edge* e = new Edge(a, b, w, dir);
 	edges.push_back(e);
+	my_edges.insert(e);
 }
 
 void Graph::dfs(Node* v){
@@ -160,21 +176,27 @@ int Graph::find_in_graph(char name){
 Graph kruskal(Graph K, Node* v){
 	Graph res;
 	int findA, findB;
-	sort(K.edges.begin(), K.edges.end(), edge_minor_w); //sorting edges by weight
-	for(int i = 0; i < K.edges.size(); i++){
-		findA = res.find_in_graph(K.edges[i]->a->name);
-		findB = res.find_in_graph(K.edges[i]->b->name);
+	//sort(K.edges.begin(), K.edges.end(), edge_minor_w); //sorting edges by weight
+	//for(int i = 0; i < K.edges.size(); i++){
+	/*for (typename edge_set::iterator it = K.my_edges.begin(); it != K.my_edges.end(); it++){ //checking that it's ordered
+		cout << "1: " << (*it)->a->name << " 2: " << (*it)->b->name << " peso: " << (*it)->weight << endl;		
+	}*/
+	for (typename edge_set::iterator it = K.my_edges.begin(); it != K.my_edges.end(); it++){
+		findA = res.find_in_graph((*it)->a->name);
+		findB = res.find_in_graph((*it)->b->name);
 		if (findA == -1) {
-			res.add_node(K.edges[i]->a->name); //not in the graph
-			findA = res.find_in_graph(K.edges[i]->a->name); //updating position
+			res.add_node((*it)->a->name); //not in the graph
+			findA = res.find_in_graph((*it)->a->name); //updating position
 		}
 		if (findB == -1) {
-			res.add_node(K.edges[i]->b->name); //not in the graph
-			findB = res.find_in_graph(K.edges[i]->b->name); //updating position
+			res.add_node((*it)->b->name); //not in the graph
+			findB = res.find_in_graph((*it)->b->name); //updating position
 		}
 		if (! res.path(res.nodes[findA], res.nodes[findB])){ //we fill the edge
-			res.add_edge(res.nodes[res.find_in_graph(K.edges[i]->a->name)], res.nodes[res.find_in_graph(K.edges[i]->b->name)], 
-						 K.edges[i]->weight, K.edges[i]->direction);
+			/*res.add_edge(res.nodes[res.find_in_graph(K.edges[i]->a->name)], res.nodes[res.find_in_graph(K.edges[i]->b->name)], 
+						 K.edges[i]->weight, K.edges[i]->direction);*/
+			res.add_edge(res.nodes[findA], res.nodes[findB], 
+						 (*it)->weight, (*it)->direction);
 		}
 		if (res.nodes.size() == K.nodes.size() ) return res; //all the nodes are in
 	}
