@@ -2,14 +2,33 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <cstdlib>
+#include <ctime>
+#include <sstream>
 
 #define huge_value 150000000
+#define max_weight 100
 
+typedef std::string str;
 typedef std::vector<int> int_vec;
-typedef std::vector<char> char_vec;
+typedef std::vector<str> char_vec;
 typedef std::pair<int, int> edge_weight; //first: neighbour, second: weight
 typedef std::vector<edge_weight> edge_vec; //vector of edges
-typedef std::string str;
+typedef std::stringstream ss;
+
+str intToString(const int &z) {
+	ss leString;
+	leString << z;
+	return leString.str();
+}
+
+int stringToInt(str a){
+	int ret;
+	ss convi(a);
+	convi >> ret;
+	return ret;
+}
+
 
 void print_matrix(const int& a, const int& b, int** c){ //test purposes
 	for (int i = 0; i < a; i++){
@@ -37,24 +56,27 @@ private:
 	void Dijks(const int& start_point, int& node, Path* p);
 public:
 	H_Graph(const int& v, const int& E);
-	void add_node(const char& name, const int& num_edges);
+	void add_node(const str& name, const int& num_edges);
 	void add_edge(const int& a, const int& b, const int& w); //goes from a to b, has weight w
 	void draw();
 	void matrix_draw();
 	int Dijkstra(int start, const int& goal);
+	void fill_graph(const int& nodes, const int& edges);
+	friend int Dijkstra_test(const int& nodes, const int& edges);
 };
 
 H_Graph::H_Graph(const int& v, const int& E){
 	this->V = v;
 	this->E = E;
+	str a = "";
 	edges.resize(this->E, std::make_pair(0,0) );
 	where_to.resize(this->V + 1, 0);
-	nodes.resize(V, 0);
+	nodes.resize(V, a);
 	cur_edge = cur_node = 0;
 	where_to.at(0) = 0;
 }
 
-void H_Graph::add_node(const char& name, const int& num_edges){
+void H_Graph::add_node(const str& name, const int& num_edges){
 	nodes.at(cur_node) = name;
 	if (cur_node) where_to.at(cur_node+1) = num_edges + where_to.at(cur_node);
 	else where_to.at(cur_node+1) = num_edges;
@@ -117,7 +139,7 @@ int H_Graph::Dijkstra(int start, const int& goal){
 	paths[start].path = nodes.at(start); //camino: el mismo nodo
 	for (int i = 0; i < V; i++){ //Dijkstra to each node
 		Dijks(copy, start, paths);
-		if (start == goal) break; //we found the distance to the point we wanted
+		//if (start == goal) break; //we found the distance to the point we wanted
 		//if we want to calculate all distances, we just comment that line
 	}
 	int res = paths[goal].length;
@@ -168,8 +190,38 @@ void H_Graph::matrix_draw(){
 	delete[] mat;
 }
 
+void H_Graph::fill_graph(const int& nodes, const int& edges){
+	//H_Graph ret(nodes, edges);
+	srand(time(NULL));
+	str node_name;
+	int difference = edges/nodes;
+	for(int i = 0; i < nodes; i++){
+		node_name = intToString(i);
+		add_node(node_name, difference);
+	}
+	for(int i = 0; i < edges/difference; i++){
+		for (int j = 0; j < difference; j++){
+			add_edge(i, rand() % nodes, rand() % max_weight); 
+		}
+	}
+}
+
+int Dijkstra_test(const int& nodes, const int& edges){
+	srand(time(NULL));
+	double elapsedTime;
+	int difference = edges/nodes, res;
+	H_Graph test(nodes, edges);
+	test.fill_graph(nodes, edges);
+	clock_t begin = clock();
+	res = test.Dijkstra(rand() % nodes, rand()% nodes);
+	clock_t end = clock();
+	elapsedTime = double(end-begin)/CLOCKS_PER_SEC;
+	std::cout << "Tiempo: " << elapsedTime << " segundos." << std::endl;
+	return res;
+}
 
 int main(int argc, char *argv[]) {
+	double elapsedTime;
 	/*H_Graph Test(7, 18);
 	Test.add_node('A', 2);
 	Test.add_node('B', 2);
@@ -199,7 +251,7 @@ int main(int argc, char *argv[]) {
 	Test.draw();
 	Test.matrix_draw();
 	std::cout << "Distance: " << Test.Dijkstra(3, 1) << std::endl;*/
-	H_Graph Test1(11, 25);
+	/*H_Graph Test1(11, 25);
 	Test1.add_node('A', 2);
 	Test1.add_node('B', 3);
 	Test1.add_node('C', 1);
@@ -237,8 +289,52 @@ int main(int argc, char *argv[]) {
 	Test1.add_edge(9, 8, 25);
 	Test1.add_edge(10, 9, 14);
 	Test1.draw();
-	std::cout << "Distance: " << Test1.Dijkstra(3, 9) << '\n';
-	std::cout << "Distance: " << Test1.Dijkstra(0, 10);
+	std::cout << "Distance: " << Test1.Dijkstra(0, 5) << '\n';
+	std::cout << "Distance: " << Test1.Dijkstra(0, 10);*/
+	/*H_Graph test_class(6, 18);
+	test_class.add_node('A', 2);
+	test_class.add_node('B', 4);
+	test_class.add_node('C', 3);
+	test_class.add_node('D', 3);
+	test_class.add_node('E', 4);
+	test_class.add_node('F', 2);
+	test_class.add_edge(0, 1, 4);
+	test_class.add_edge(0, 2, 2);
+	test_class.add_edge(1, 0, 4);
+	test_class.add_edge(1, 2, 3);
+	test_class.add_edge(1, 3, 2);
+	test_class.add_edge(1, 4, 1);
+	test_class.add_edge(2, 0, 2);
+	test_class.add_edge(2, 1, 3);
+	test_class.add_edge(2, 4, 3);
+	test_class.add_edge(3, 1, 2);
+	test_class.add_edge(3, 4, 2);
+	test_class.add_edge(3, 5, 4);
+	test_class.add_edge(4, 1, 1);
+	test_class.add_edge(4, 2, 3);
+	test_class.add_edge(4, 3, 2);
+	test_class.add_edge(4, 5, 2);
+	test_class.add_edge(5, 3, 4);
+	test_class.add_edge(5, 4, 2);
+	test_class.draw();
+	//test_class.matrix_draw(); 
+	std::cout << test_class.Dijkstra(0, 5); //10k, 50k, 100k, 500k, 1M  */
+	srand(time(NULL));
+	std::cout << "10 000:\n";
+	Dijkstra_test(10000, 30000);
+	
+	std::cout << "50 000:\n";
+	Dijkstra_test(50000, 150000);
+	
+	std::cout << "100 000:\n";
+	Dijkstra_test(100000, 300000);
+	
+	std::cout << "500 000:\n";
+	Dijkstra_test(500000, 1500000);
+	
+	std::cout << "1 000 000:\n";
+	Dijkstra_test(1000000, 3000000);
+	
 	return 0;
 }
 
