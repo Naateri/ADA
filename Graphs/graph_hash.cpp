@@ -121,7 +121,12 @@ int H_Graph::Dijkstra(int start, const int& goal){
 		//if we want to calculate all distances, we just comment that line
 	}
 	int res = paths[goal].length;
-	std::cout << "Camino: " << paths[goal].path << std::endl;
+	if ( !paths[goal].path.empty() )  std::cout << "Camino: " << paths[goal].path << std::endl;
+	else{
+		std::cout << "No hay camino del nodo " << nodes.at(start) << " al nodo " << nodes.at(goal) << "\n";
+		delete[] paths;
+		return -1;
+	}
 	delete[] paths;
 	return res;
 }
@@ -194,7 +199,7 @@ int main(int argc, char *argv[]) {
 	Test.draw();
 	Test.matrix_draw();
 	std::cout << "Distance: " << Test.Dijkstra(3, 1) << std::endl;*/
-	H_Graph Test1(10, 24);
+	H_Graph Test1(11, 25);
 	Test1.add_node('A', 2);
 	Test1.add_node('B', 3);
 	Test1.add_node('C', 1);
@@ -205,6 +210,7 @@ int main(int argc, char *argv[]) {
 	Test1.add_node('H', 2);
 	Test1.add_node('I', 3);
 	Test1.add_node('J', 4);
+	Test1.add_node('K', 1);
 	Test1.add_edge(0, 3, 6);
 	Test1.add_edge(0, 6, 8);
 	Test1.add_edge(1, 0, 5);
@@ -229,8 +235,10 @@ int main(int argc, char *argv[]) {
 	Test1.add_edge(9, 6, 8);
 	Test1.add_edge(9, 7, 3);
 	Test1.add_edge(9, 8, 25);
+	Test1.add_edge(10, 9, 14);
 	Test1.draw();
-	std::cout << "Distance: " << Test1.Dijkstra(3, 9);
+	std::cout << "Distance: " << Test1.Dijkstra(3, 9) << '\n';
+	std::cout << "Distance: " << Test1.Dijkstra(0, 10);
 	return 0;
 }
 
