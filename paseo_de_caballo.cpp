@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <ctime>
 
 typedef std::vector<int> int_vec;
 
@@ -15,8 +16,9 @@ bool in(int_vec vector, int num){ //finds if a number is in a vector
 
 int** create_matrix(int n){
 	int** mat = new int*[n];
-	for (int i = 0; i < n; i++){
-		mat[i] = new int[n];
+	mat[0] = new int[n*n];
+	for (int i = 1; i < n; i++){
+		mat[i] = mat[i-1] + n;
 	}
 	for (int i = 0; i < n; i++){
 		for (int j = 0; j < n; j++){
@@ -26,19 +28,26 @@ int** create_matrix(int n){
 	return mat;
 }
 
-void prueba(int i, int x, int y, bool& q, int** mat, const int& n){
+void print_matrix(int** m, int n){ //works only for squared matrices
+	for(int i = 0; i < n; i++){
+		for (int j = 0; j < n; j++){
+			std::cout << m[i][j] << ' ';
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+void prueba(const int& i, const int& x, const int& y, bool& q, int** mat, const int& n){
 	int xn, yn, m = 0, n2 = n*n;
 	bool q1;
-	std::cout << "prueba " << i << "\n";
 	do{
 		q1 = 0;
-		std::cout << "m: " << m << std::endl;
 		xn = x + horizontal.at(m);
 		yn = y + vertical.at(m);
-		if ( in(pasos, xn) && in(pasos, yn) ){
+		if ( (xn < n && xn >= 0) && (yn < n && yn >= 0) ){
 			if (mat[xn][yn] == 0){
 				mat[xn][yn] = i;
-				std::cout << "i " << i << '\n';
 				if ( i < (n2) ){
 					prueba(i+1, xn, yn, q1, mat, n);
 					if ( ! q1){
@@ -50,25 +59,31 @@ void prueba(int i, int x, int y, bool& q, int** mat, const int& n){
 			}
 		}
 		m++;
-	} while(!q1 || m < n);
+	} while(!q1 && m < 8);
 	q = q1;
 }
 
-void paseo_de_caballo(int n, int start_x, int start_y){
+void paseo_de_caballo(const int& n, const int& start_x, const int& start_y){
 	bool q;
 	int** mat;
 	mat = create_matrix(n);
 	mat[start_x][start_y] = 1;
-	std::cout << "hola\n";
 	prueba(2, start_x, start_y, q, mat, n);
-	std::cout << "hola2\n";
-	if (q) std::cout << "solucion\n";
+	if (q) print_matrix(mat, n);
 	else std::cout << "no hay solucion\n";
 	delete[] mat;
 }
 
 int main(int argc, char *argv[]) {
-	paseo_de_caballo(8, 0, 0);
+	int n, x, y;
+	std::cout << "Ingrese la cantidad de filas y columnas:\n";
+	std::cin >> n;
+	std::cout << "Ingrese la posicion inicial (empezando de 0):\n";
+	std::cin >> x >> y;
+	clock_t begin = clock();
+	paseo_de_caballo(n, x, y);
+	clock_t end = clock();
+	std::cout << double(end-begin)/CLOCKS_PER_SEC << " segundos.\n";
 	return 0;
 }
 

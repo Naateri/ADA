@@ -90,14 +90,14 @@ int smartly_choose_pivot(int_vec A){ //algorithm that'll find the median of medi
 	int m, j, p, p_i, tempi;
 	m = ceil(A.size() / float(5));
 	int_vec candidate_pivots, temp;
-	int_vec cop(A); ///cop = copy of A
+	int_vec cop(A); //cop = copy of A
 	vec_of_vecs groups (m);
 	for(int i = 0; i < m; i++){
 		j = 5;
 		temp.clear();
 		while (j > 0 && !cop.empty() ){
-			temp.push_back(cop.front() ); ///adding to temp first element of A's copy
-			cop.erase(cop.begin() ); ///then deleting that number
+			temp.push_back(cop.front() ); //adding to temp first element of A's copy
+			cop.erase(cop.begin() ); //then deleting that number
 			j--;
 		}
 		groups.at(i) = temp;
@@ -124,7 +124,6 @@ int partition(int_vec A, int p, int_vec& L, int_vec& R){ //for select_k
 }
 
 int select_k(int_vec A, int k){
-	//if (end-start <= 5) return median(A);
 	if (A.size() <= 5) return median(A);
 	int p = smartly_choose_pivot(A);
 	int_vec L, R;
@@ -178,26 +177,25 @@ double quicksort_m_test_multiple(const int& size, const int& iterations = MIN_IT
 
 
 int main(int argc, char *argv[]) {
-	int_vec test = create_vector(100, 500);
+	/*int_vec test = create_vector(100, 500);
 	print_vec(test);
 	quicksort_median(test, 0, test.size() - 1);
-	print_vec(test);
+	print_vec(test);*/
 	std::cout << "Quicksort normal (pivote ultimo elemento):\n";
 	std::cout << "1000 elementos: " << quicksort_test_multiple(1000) << " segundos.\n";
 	std::cout << "10000 elementos: " << quicksort_test_multiple(10000) << " segundos.\n";
 	std::cout << "50000 elementos: " << quicksort_test_multiple(50000) << " segundos.\n";
 	std::cout << "100000 elementos: " << quicksort_test_multiple(100000) << " segundos.\n";
 	std::cout << "500000 elementos: " << quicksort_test_multiple(500000) << " segundos.\n";
-	//std::cout << "1000000 elementos: " << quicksort_test_multiple(1000000) << " segundos.\n";
-	//std::cout << "5000000 elementos: " << quicksort_test_multiple(5000000) << " segundos.\n";
+	std::cout << "1000000 elementos: " << quicksort_test_multiple(1000000) << " segundos.\n";
+	std::cout << "5000000 elementos: " << quicksort_test_multiple(5000000) << " segundos.\n";
 	std::cout << "\nQuicksort hallando una aproximacion de la mediana:\n";
-	std::cout << "1000 elementos: " << quicksort_m_test_multiple(1000) << " segundos.\n";
-	std::cout << "10000 elementos: " << quicksort_m_test_multiple(10000) << " segundos.\n";
-	std::cout << "50000 elementos: " << quicksort_m_test_multiple(50000) << " segundos.\n";
-	std::cout << "100000 elementos: " << quicksort_m_test_multiple(100000) << " segundos.\n";
-	std::cout << "500000 elementos: " << quicksort_m_test_multiple(500000) << " segundos.\n";
-	std::cout << "1000000 elementos: " << quicksort_m_test_multiple(1000000) << " segundos.\n";
-	std::cout << "5000000 elementos: " << quicksort_m_test_multiple(5000000) << " segundos.\n";
+	std::cout << "1000 elementos: " << quicksort_m_test(1000) << " segundos.\n";
+	std::cout << "10000 elementos: " << quicksort_m_test(10000) << " segundos.\n";
+	std::cout << "50000 elementos: " << quicksort_m_test(50000) << " segundos.\n";
+	std::cout << "100000 elementos: " << quicksort_m_test(100000) << " segundos.\n";
+	std::cout << "500000 elementos: " << quicksort_m_test(500000) << " segundos.\n";
+	std::cout << "1000000 elementos: " << quicksort_m_test(1000000) << " segundos.\n";
+	std::cout << "5000000 elementos: " << quicksort_m_test(5000000) << " segundos.\n";
 	return 0;
 }
-
