@@ -81,7 +81,10 @@ int main(int argc, char *argv[]) {
 	std::cin >> n;
 	std::cout << "Ingrese la cantidad de filas y columnas del tablero:\n";
 	std::cin >> m;
+	clock_t begin = clock();
 	n_queens(n, m);
+	clock_t end = clock();
+	std::cout << "Tiempo: " << double(end-begin)/CLOCKS_PER_SEC << " segundos.\n";
 	return 0;
 }
 

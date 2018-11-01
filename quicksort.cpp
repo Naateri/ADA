@@ -135,7 +135,7 @@ int select_k(int_vec A, int k){
 
 int median_partition(int_vec& A, const int& start, const int& end){
 	int_vec cop;
-	std::copy(A.begin(), A.begin() + (end-start), std::back_inserter(cop));
+	std::copy(A.begin() + start, A.begin() + end, std::back_inserter(cop));
 	int pivot = find_elem(A, select_k(cop, cop.size()>>1) ), i = start - 1; //median element
 	swap(A.at(pivot), A.at(end));
 	for (int j = start; j < end; j++){
