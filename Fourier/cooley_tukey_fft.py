@@ -1,30 +1,17 @@
 import cmath
 import numpy as np
 import matplotlib.pyplot as plt
-
-def separate(numbers):
-    temp = list()
-    n = len(numbers)
-    for i in range(int(n/2)):
-        temp.append(numbers[i*2 + 1])
-    for i in range(int(n/2)):
-        numbers[i] = numbers[i*2]
-    for i in range (int(n/2)):
-        numbers[i+int(n/2)] = temp[i]
-    #return numbers
+from time import time
 
 def cooley_tukey_fft(numbers):
     n = len(numbers)
     if n == 1:
         return
     else:
-        #separate(numbers)
         numbers_first_half = numbers[0:n:2] #even
         numbers_second_half = numbers[1:n:2] #odd
         cooley_tukey_fft(numbers_first_half)
         cooley_tukey_fft(numbers_second_half)
-
-        #numbers.clear()
 
         for k in range(int(n/2)):
             t = numbers_first_half[k]
@@ -35,15 +22,62 @@ def cooley_tukey_fft(numbers):
             numbers[k + int(n/2)] = t - w * t_1
 
         return numbers
+
+def time_measurement(n):
+	iterations = 2 ** n
+	fourier = list()
+	for i in range(iterations):
+		fourier.append(cmath.sin(i))
+	start = time()
+	cooley_tukey_fft(fourier)
+	end = time()
+	print ("Tiempo de " + str(iterations) + " elementos: " + str(end-start) + " segundos.")			
+
         
 
-test = cooley_tukey_fft([0,0,2,3,4,0,0,0])
-#test = cooley_tukey_fft([complex(1,0),complex(2,-1),complex(0,-1),complex(-1,2)])
-test_2 = np.fft.fft([0,0,2,3,4,0,0,0])
+test = cooley_tukey_fft([0,2,2,3,4,4,5,6,0,0])
+test_2 = np.fft.fft([0,2,2,3,4,4,0,0])
+test_real = list()
+test_imag = list()
 
-print ("My fourier: ")
+#print ("My fourier: ")
+print ("Valor real \t Valor imaginario")
 for i in range (len(test)):
-    print( str(test[i].real) + '\t' + str(test[i].imag ) )
+	print( str(test[i].real) + '\t' + str(test[i].imag ) )
+	test_real.append(test[i].real)
+	test_imag.append(test[i].imag)
+
+print ("IDFT")
+print ("Valor real \t Valor imaginario")
+xd = np.fft.ifft(test)
+for i in range (len(xd)):
+	print (str(xd[i].real) + '\t' + str(xd[i].imag) )
+
+plt.plot(range(len(test)), test_real, range(len(test)), test_imag)
+plt.legend(('real fft', 'imaginary fft'))
+plt.show()
+
+plt.plot(range(len(test)), xd.real, range(len(test)), xd.imag)
+plt.legend(('real fft', 'imaginary fft'))
+plt.show()
+
+"""
+#test_freq = np.fft.fftfreq(int(len(test)),0.1)
+temp_real = list()
+temp_imag = list()
+test_freq = list()
+for i in range(8):
+    test_freq.append(i)
+
+
+print ( test_freq )
+
+for i in range (len(test)):
+    temp_real.append(test[i].real)
+    temp_imag.append(test[i].imag)
+
+plt.plot(test_freq, temp_real, test_freq, temp_imag)
+plt.show()
 
 print ("numpy: ")
 for i in range (len(test_2)):
@@ -65,3 +99,9 @@ for i in range(len(t)):
 
 plt.plot(freq, sp_real, freq, sp_imag)
 plt.show()
+
+for i in range(5,15):
+	time_measurement(i)	
+
+"""
+
