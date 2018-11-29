@@ -274,7 +274,7 @@ bool hamiltonian_cycle(Graph G, int cur_node){
 			return hamiltonian_cycle(G, cur_node+1);
 		}
 	} else {
-		return 0;
+		return hamiltonian_cycle(G, cur_node+1);
 	}
 }
 

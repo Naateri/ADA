@@ -284,7 +284,7 @@ int main(int argc, char *argv[]) {
 	B.add_edge(B.nodes[4], B.nodes[0], 1, 0);
 	B.draw();
 	B.bfs(B.nodes[7]);*/
-	Graph K, Krusk; //K: example for Kruskal algorithm used at class
+	/*Graph K, Krusk; //K: example for Kruskal algorithm used at class
 	K.add_node('A');
 	K.add_node('B');
 	K.add_node('C');
@@ -302,7 +302,22 @@ int main(int argc, char *argv[]) {
 	K.add_edge(K.nodes[4], K.nodes[5], 4, 0);
 	//K.draw();
 	Krusk = kruskal(K, K.nodes[0]);
-	Krusk.draw();
+	Krusk.draw();*/
+	Graph Barbachan;
+	Barbachan.add_node('A');
+	Barbachan.add_node('B');
+	Barbachan.add_node('C');
+	Barbachan.add_node('D');
+	Barbachan.add_node('E');
+	Barbachan.add_node('F');
+	Barbachan.add_edge(Barbachan.nodes[0], Barbachan.nodes[1], 110, 0);
+	Barbachan.add_edge(Barbachan.nodes[0], Barbachan.nodes[4], 110, 0);
+	Barbachan.add_edge(Barbachan.nodes[1], Barbachan.nodes[2], 80, 0);
+	Barbachan.add_edge(Barbachan.nodes[1], Barbachan.nodes[2], 80, 0);
+	Barbachan.add_edge(Barbachan.nodes[2], Barbachan.nodes[3], 200, 0);
+	Barbachan.add_edge(Barbachan.nodes[3], Barbachan.nodes[4], 90, 0);
+	Barbachan.add_edge(Barbachan.nodes[4], Barbachan.nodes[5], 50, 0);
+	Barbachan.draw();
 	return 0;
 }
 

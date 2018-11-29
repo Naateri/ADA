@@ -107,7 +107,8 @@ def hamiltonian_cycle(G,cur_node=0): #G = (V,E)
             return hamiltonian_cycle(G,cur_node+1) #we try starting with the
             #next node
     else:
-        return False #it didn't find a path of length |V| - 1
+        return hamiltonian_cycle(G,cur_node+1) #it didn't find a
+        #path of length |V| - 1, but maybe it can with the next node
 
 def time_path(amount):
     """for k in range(5,amount+1,5):
