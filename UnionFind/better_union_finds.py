@@ -49,6 +49,7 @@ class disjoint_set():
         
         if xRoot.rank == yRoot.rank:
             xRoot.rank = xRoot.rank + 1
+            print("x's new rank: " + str(xRoot.rank) + '\n')
 
     def print_nodes(self):
         for node in self.nodes:
